@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy shared library
+COPY shared/ ./shared/
+RUN pip install -e ./shared
+
+# Copy Scheduler service
+COPY services/scheduler/requirements.txt ./services/scheduler/
+RUN pip install --no-cache-dir -r services/scheduler/requirements.txt
+
+COPY services/scheduler/ ./services/scheduler/
+
+# Run Scheduler
+CMD ["python", "-m", "services.scheduler.app.main"]

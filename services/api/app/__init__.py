@@ -1,0 +1,3 @@
+"""
+Cinema Radar API service.
+"""
